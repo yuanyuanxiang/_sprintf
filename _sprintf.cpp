@@ -1,9 +1,8 @@
 #include "_sprintf.h"
-#include <stdarg.h>
+#include <string>
 #include <assert.h>
-#include <string.h>
+#include <stdarg.h>
 #include <stdlib.h>
-#include <Strsafe.h>
 
 #ifndef va_copy
 #define va_copy(dst, src) memcpy(&(dst), &(src), sizeof(va_list))
@@ -85,11 +84,10 @@ int _sprintf(char *dst, const char *format, ...)
 	va_copy(another, ap);
 	while (*f)
 	{
-		int n = 0;
+		int n = 1;
 		if ('%' != *f)
 		{
 			*s = *f;
-			n = 1;
 		}else{
 			++f;
 			switch (*f)
@@ -123,7 +121,6 @@ int _sprintf(char *dst, const char *format, ...)
 			case 'c':// ×Ö·û
 				{
 					*s = va_arg(ap, int);
-					n = 1;
 				}
 				break;
 

@@ -7,7 +7,7 @@
 #define TIMES 100
 #define N 128
 #else
-#define TIMES 20000
+#define TIMES 10000
 #define N 1024
 #endif
 
@@ -20,6 +20,7 @@ int main()
 	len = _itoa(-1, buf);
 	len = _itoa(123456789, buf);
 	len = _itoa(-123456789, buf);
+	len = _i2a(256, buf, 16);
 
 	len = _ftoa(987654321.123456789, buf);
 	len = _ftoa(-0.123456789, buf);
@@ -40,7 +41,7 @@ int main()
 	{
 		for (int i = 0; i < N; ++i)
 		{
-			_sprintf(_p[i], "string= %s, int= %d, float= %f, char= %c.\n", 
+			_sprintf(_p[i], "string= %s, int= %x, float= %f, char= %c.\n", 
 				"×Ö·û´®", int(arr[i]), arr[i], 'c');
 		}
 	}
@@ -53,7 +54,7 @@ int main()
 	{
 		for (int i = 0; i < N; ++i)
 		{
-			sprintf(p[i], "string= %s, int= %d, float= %.6f, char= %c.\n", 
+			sprintf(p[i], "string= %s, int= %x, float= %.6f, char= %c.\n", 
 				"×Ö·û´®", int(arr[i]), arr[i], 'c');
 		}
 	}
@@ -62,8 +63,9 @@ int main()
 
 	int n = rand() % N;
 	printf("_p[%d]: %s\n", n, _p[n]);
-	printf("speed up: %f\n", 1.0*t2/t1);
+
 	// compare
+	n = 0;
 	for (int i = 0; i < N; ++i)
 	{
 		if (strcmp(_p[i], p[i]))
@@ -72,8 +74,11 @@ int main()
 			printf("\n");
 			printf(p[i]);
 			printf("\n\n");
+			++n;
 		}
 	}
+	printf("total %d, uncompare num: %d\n", N, n);
+	printf("speed up: %f\n", 1.0*t2/t1);
 
 	system("PAUSE");
 

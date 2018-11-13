@@ -1,7 +1,9 @@
 #pragma once
 
 // 整数转字符串
-int _itoa(int num, char buf[32]);
+inline int _itoa(int num, char buf[32]);
+
+int _i2a(int num, char buf[32], int radix= 10);
 
 // 浮点转字符串
 int _ftoa(double val, char buf[32], int eps= 6);

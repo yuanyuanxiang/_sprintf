@@ -10,14 +10,26 @@
 
 /************************************************************************
 * @brief 整数转字符串
-* @param[in] 整数
-* @param[out] 字符串
+* @param[in] num 整数
+* @param[out] buf 字符串
 * @return 返回字符串长度
 ************************************************************************/
 int _itoa(int num, char buf[32])
 {
-	static const char s[] = "0123456789";
-	int n = num;
+	return _i2a(num, buf, 10);
+}
+
+/************************************************************************
+* @brief 整数转字符串
+* @param[in] num 整数
+* @param[out] buf 字符串
+* @param[in] radix 进位制整数
+* @return 返回字符串长度
+************************************************************************/
+int _i2a(int num, char buf[32], int radix)
+{
+	static const char s[] = "0123456789abcdef";
+	int n = num, R = radix;
 	char *dst = buf;
 	if (n < 0) { *dst++ = '-'; n = -n; }
 	if (n < 10)
@@ -26,7 +38,7 @@ int _itoa(int num, char buf[32])
 	}else
 	{
 		char tmp[32], *p = tmp;
-		while (n) { *p++ = s[n % 10]; n /= 10; }
+		while (n) { *p++ = s[n % R]; n /= R; }
 		while (--p != tmp) *dst++ = *p;
 		*dst++ = *tmp; *dst = 0;
 	}
@@ -35,9 +47,9 @@ int _itoa(int num, char buf[32])
 
 /************************************************************************
 * @brief 浮点数转字符串
-* @param[in] 浮点数
-* @param[out] 字符串
-* @param[in] 精度(小数位)
+* @param[in] val 浮点数
+* @param[out] buf 字符串
+* @param[in] eps 精度(小数位)
 * @return 返回字符串长度
 ************************************************************************/
 int _ftoa(double val, char buf[32], int eps)
@@ -52,9 +64,9 @@ int _ftoa(double val, char buf[32], int eps)
 
 /************************************************************************
 * @brief 浮点数转字符串：范围(-1, 1)
-* @param[in] 浮点数
-* @param[out] 字符串
-* @param[in] 精度(小数位)
+* @param[in] val 浮点数
+* @param[out] buf 字符串
+* @param[in] eps 精度(小数位)
 * @return 返回字符串长度
 ************************************************************************/
 int __ftoa(double val, char buf[32], int eps)
@@ -100,20 +112,26 @@ int _sprintf(char *dst, const char *format, ...)
 				}
 				break;
 
-			case 'd':// 整数
+			case 'd': case 'u':// 整数
 				{
-					int i = va_arg(ap, int);
 					char buf[32];
-					n = _itoa(i, buf);
+					n = _itoa(va_arg(ap, int), buf);
 					memcpy(s, buf, n);
 				}
 				break;
 
 			case 'f':// 浮点数
 				{
-					double v = va_arg(ap, double);
 					char buf[32];
-					n = _ftoa(v, buf);
+					n = _ftoa(va_arg(ap, double), buf);
+					memcpy(s, buf, n);
+				}
+				break;
+
+			case 'x':// 16进制数
+				{
+					char buf[32];
+					n = _i2a(va_arg(ap, int), buf, 16);
 					memcpy(s, buf, n);
 				}
 				break;
@@ -121,6 +139,12 @@ int _sprintf(char *dst, const char *format, ...)
 			case 'c':// 字符
 				{
 					*s = va_arg(ap, int);
+				}
+				break;
+
+			case '%':// 百分号
+				{
+					*s = '%';
 				}
 				break;
 
